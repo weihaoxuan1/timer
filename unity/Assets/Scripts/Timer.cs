@@ -5,7 +5,7 @@ public class Timer : MonoBehaviour {
 
     int fen = 30;
     int miao = 0;
-    int haomiao = 0;
+    float haomiao = 0;
     float delta=0;
     bool ifStart = false;
     bool ifHide = false;
@@ -17,29 +17,49 @@ public class Timer : MonoBehaviour {
 
     void OnGUI()
     {
-        if (Application.platform != RuntimePlatform.Android)
+        if (true)//Application.platform != RuntimePlatform.Android)
         {
-            if (GUI.Button(new Rect(110, 10, 150, 100), "start"))
-                ifStart = true;
-            if (GUI.Button(new Rect(310, 10, 150, 100), "stop"))
+            if (GUI.Button(new Rect(110, 10, 300, 200), "start/stop"))
+            {
+                ifStart = !ifStart;
+            }
+            if (GUI.Button(new Rect(420, 10, 300, 200), "reset"))
+            {
+                fen = 30;
+                miao = 0;
+                haomiao = 0;
                 ifStart = false;
-            if (GUI.Button(new Rect(510, 10, 150, 100), "add"))
+                Flash();
+            }
+            if (GUI.Button(new Rect(730, 10, 300, 200), "add"))
+            {
                 fen += 5;
-            if (GUI.Button(new Rect(710, 10, 150, 100), "next"))
+                Flash();
+            }
+            if (GUI.Button(new Rect(1040, 10, 300, 200), "next"))
             {
                 fen = 5;
                 miao = 0;
+                haomiao = 0;
+                ifStart = false;
+                Flash();
             }
-            if (GUI.Button(new Rect(110, 110, 150, 100), "hide/show"))
+            if (GUI.Button(new Rect(1350, 10, 300, 200), "hide/show"))
+            {
                 ifHide = !ifHide;
+                Flash();
+            }
+            if (GUI.Button(new Rect(1620, 880, 300, 200), "quit"))
+                OnQuit();
         }
     }
 	// Update is called once per frame
 	void Update () {
         if (ifStart)
         {
-            
-            haomiao -= (int)(Time.deltaTime * 100);
+            //Debug.Log(Time.deltaTime);
+            haomiao -= Time.deltaTime * 100;
+            //Debug.Log(haomiao);
             if (haomiao < 0 )
             {
                 miao--;
@@ -47,22 +67,36 @@ public class Timer : MonoBehaviour {
             }
             if (miao < 0)
             {
+                if (fen - 1 < 0)
+                {
+                    ifStart = false;
+                    return;
+                }
                 fen--;
                 miao = 59;
             }
-            if (!ifHide)
-                time.text = fen.ToString() + ":" +
-                    (miao < 10 ? "0" + miao.ToString() : miao.ToString()) + ":" +
-                    (haomiao < 10 ? "0" + haomiao.ToString() : haomiao.ToString());
-            else
-                time.text = fen.ToString() + ":" +
-               (miao < 10 ? "0" + miao.ToString() : miao.ToString());
+            Flash();
         }
 	}
 
     public void startButton()
     {
-        Debug.Log("a");
         ifStart = !ifStart;
+    }
+
+    void OnQuit()
+    {
+        Application.Quit();
+    }
+
+    void Flash()
+    {
+        if (!ifHide)
+            time.text = fen.ToString() + ":" +
+                (miao < 10 ? "0" + miao.ToString() : miao.ToString()) + ":" +
+                (haomiao < 10 ? "0" + ((int)haomiao).ToString() : ((int)haomiao).ToString());
+        else
+            time.text = fen.ToString() + ":" +
+           (miao < 10 ? "0" + miao.ToString() : miao.ToString());
     }
 }
