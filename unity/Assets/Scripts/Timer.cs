@@ -3,16 +3,26 @@ using System.Collections;
 
 public class Timer : MonoBehaviour {
 
-    int fen = 30;
-    int miao = 0;
-    float haomiao = 0;
-    float delta=0;
+    public int eachTime;
+    int mainMin = 10;
+    int mainSec = 0;
+    float mSec = 0;
+    float delta = 0;
+    int currGroup = 1;
     bool ifStart = false;
     bool ifHide = false;
-    UILabel time;
+    bool ifTimeout = false;
+    UILabel mainTime;
+    UILabel deltaTime;
+    UILabel group;
 	// Use this for initialization
 	void Start () {
-        time = GetComponent<UILabel>();
+        mainTime = transform.Find("MainTime").GetComponent<UILabel>();
+        deltaTime = transform.Find("DeltaTime").GetComponent<UILabel>();
+        group = transform.Find("Group").GetComponent<UILabel>();
+        mainMin = eachTime;
+
+        Flash();
 	}
 
     void OnGUI()
@@ -25,22 +35,22 @@ public class Timer : MonoBehaviour {
             }
             if (GUI.Button(new Rect(420, 10, 300, 200), "reset"))
             {
-                fen = 30;
-                miao = 0;
-                haomiao = 0;
+                mainMin = eachTime;
+                mainSec = 0;
+                mSec = 0;
                 ifStart = false;
                 Flash();
             }
             if (GUI.Button(new Rect(730, 10, 300, 200), "add"))
             {
-                fen += 5;
+                mainMin += 5;
                 Flash();
             }
             if (GUI.Button(new Rect(1040, 10, 300, 200), "next"))
             {
-                fen = 5;
-                miao = 0;
-                haomiao = 0;
+                mainMin = 5;
+                mainSec = 0;
+                mSec = 0;
                 ifStart = false;
                 Flash();
             }
@@ -55,31 +65,38 @@ public class Timer : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
-        if (ifStart)
+        if (ifStart && !ifTimeout)
         {
             //Debug.Log(Time.deltaTime);
-            haomiao -= Time.deltaTime * 100;
-            //Debug.Log(haomiao);
-            if (haomiao < 0 )
+            mSec -= Time.deltaTime * 100;
+            //Debug.Log(mSec);
+            if (mSec < 0 )
             {
-                miao--;
-                haomiao = 100 + haomiao;
+                mainSec--;
+                mSec = 100 + mSec;
             }
-            if (miao < 0)
+            if (mainSec < 0)
             {
-                if (fen - 1 < 0)
+                if (mainMin - 1 < 0)
                 {
+                    mSec = 0;
+                    mainSec = 0;
                     ifStart = false;
+                    ifTimeout = true;
                     return;
                 }
-                fen--;
-                miao = 59;
+                mainMin--;
+                mainSec = 59;
             }
             Flash();
         }
+        if (ifTimeout)
+        {
+            Timeout();
+        }
 	}
 
-    public void startButton()
+    public void OnStartTimer()
     {
         ifStart = !ifStart;
     }
@@ -92,11 +109,44 @@ public class Timer : MonoBehaviour {
     void Flash()
     {
         if (!ifHide)
-            time.text = fen.ToString() + ":" +
-                (miao < 10 ? "0" + miao.ToString() : miao.ToString()) + ":" +
-                (haomiao < 10 ? "0" + ((int)haomiao).ToString() : ((int)haomiao).ToString());
+            mainTime.text = mainMin.ToString() + ":" +
+                (mainSec < 10 ? "0" + mainSec.ToString() : mainSec.ToString()) + ":" +
+                (mSec < 10 ? "0" + ((int)mSec).ToString() : ((int)mSec).ToString());
         else
-            time.text = fen.ToString() + ":" +
-           (miao < 10 ? "0" + miao.ToString() : miao.ToString());
+            mainTime.text = mainMin.ToString() + ":" +
+           (mainSec < 10 ? "0" + mainSec.ToString() : mainSec.ToString());
+        deltaTime.text = (delta >= 0 ? "+" : "") + ((int)(delta / 60)).ToString() + ":" + ((delta % 60) < 10 ? "0" + ((int)(delta % 60)).ToString() : ((int)(delta % 60)).ToString());
+        if (delta >= 0)
+            deltaTime.color = new Color(0, 255, 0);
+        else
+            deltaTime.color = new Color(255, 0, 0);
+    }
+
+    void Timeout()
+    {
+        delta -= Time.deltaTime;
+        Flash();
+    }
+
+    public void OnIncreaseTime()
+    {
+        delta -= 300;
+        mainMin += 5;
+        
+        Flash();
+    }
+
+    public void OnNextGroup()
+    {
+        delta += mainMin * 60 + mainSec;
+        mainMin = eachTime;
+        mainSec = 0;
+        mSec = 0;
+        ifStart = false;
+        
+        currGroup++;
+        group.text = "第" + currGroup.ToString() + "组";
+        
+        Flash();
     }
 }
