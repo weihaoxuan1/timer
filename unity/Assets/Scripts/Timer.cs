@@ -15,17 +15,22 @@ public class Timer : MonoBehaviour {
     UILabel mainTime;
     UILabel deltaTime;
     UILabel group;
+
+    GameObject zoomIn;
+    GameObject zoomOut;
 	// Use this for initialization
 	void Start () {
         mainTime = transform.Find("MainTime").GetComponent<UILabel>();
         deltaTime = transform.Find("DeltaTime").GetComponent<UILabel>();
         group = transform.Find("Group").GetComponent<UILabel>();
+        zoomIn = transform.Find("Zoomin").gameObject;
+        zoomOut = transform.Find("Zoomout").gameObject;
         mainMin = eachTime;
 
         Flash();
 	}
 
-    void OnGUI()
+    /*void OnGUI()
     {
         if (true)//Application.platform != RuntimePlatform.Android)
         {
@@ -62,7 +67,7 @@ public class Timer : MonoBehaviour {
             if (GUI.Button(new Rect(1620, 880, 300, 200), "quit"))
                 OnQuit();
         }
-    }
+    }*/
 	// Update is called once per frame
 	void Update () {
         if (ifStart && !ifTimeout)
@@ -98,12 +103,8 @@ public class Timer : MonoBehaviour {
 
     public void OnStartTimer()
     {
+        audio.Play();
         ifStart = !ifStart;
-    }
-
-    void OnQuit()
-    {
-        Application.Quit();
     }
 
     void Flash()
@@ -115,7 +116,11 @@ public class Timer : MonoBehaviour {
         else
             mainTime.text = mainMin.ToString() + ":" +
            (mainSec < 10 ? "0" + mainSec.ToString() : mainSec.ToString());
-        deltaTime.text = (delta >= 0 ? "+" : "") + ((int)(delta / 60)).ToString() + ":" + ((delta % 60) < 10 ? "0" + ((int)(delta % 60)).ToString() : ((int)(delta % 60)).ToString());
+
+        int d = delta >= 0 ? (int)delta : (int)(0 - delta);
+        deltaTime.text = (delta >= 0 ? "+" : "-") + 
+            (d / 60).ToString() + ":" + 
+            ((d % 60) < 10 ? "0" + ((d % 60)).ToString() : ((d % 60)).ToString());
         if (delta >= 0)
             deltaTime.color = new Color(0, 255, 0);
         else
@@ -132,7 +137,8 @@ public class Timer : MonoBehaviour {
     {
         delta -= 300;
         mainMin += 5;
-        
+        ifTimeout = false;
+        audio.Play();
         Flash();
     }
 
@@ -143,10 +149,42 @@ public class Timer : MonoBehaviour {
         mainSec = 0;
         mSec = 0;
         ifStart = false;
+        ifTimeout = false;
         
         currGroup++;
         group.text = "第" + currGroup.ToString() + "组";
-        
+        audio.Play();
+        Flash();
+    }
+
+    public void OnChange_mSec()
+    {
+        ifHide = !ifHide;
+        if (ifHide)
+        {
+            zoomIn.SetActive(true);
+            zoomOut.SetActive(false);
+        }
+        else
+        {
+            zoomIn.SetActive(false);
+            zoomOut.SetActive(true);
+        }
+        audio.Play();
+        Flash();
+    }
+
+    public void OnReset()
+    {
+        mainMin = eachTime;
+        mainSec = 0;
+        mSec = 0;
+        delta = 0;
+        currGroup = 1;
+        ifStart = false;
+        ifTimeout = false;
+        audio.Play();
+        group.text = "第" + currGroup.ToString() + "组";
         Flash();
     }
 }
