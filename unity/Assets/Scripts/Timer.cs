@@ -187,4 +187,16 @@ public class Timer : MonoBehaviour {
         group.text = "第" + currGroup.ToString() + "组";
         Flash();
     }
+
+    public void OnInputSubmit()
+    {
+        Debug.Log(eachTime);
+        eachTime = int.Parse(GameObject.Find("InputEachTime/Label").gameObject.GetComponent<UILabel>().text);
+        Debug.Log(eachTime);
+        if(!ifStart && !ifTimeout)
+            mainMin = eachTime;
+        Flash();
+    }
+
+    
 }
