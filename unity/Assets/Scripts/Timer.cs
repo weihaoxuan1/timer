@@ -193,10 +193,8 @@ public class Timer : MonoBehaviour {
         Debug.Log(eachTime);
         eachTime = int.Parse(GameObject.Find("InputEachTime/Label").gameObject.GetComponent<UILabel>().text);
         Debug.Log(eachTime);
-        if(!ifStart && !ifTimeout)
+        if(!ifStart && !ifTimeout && mSec == 0)
             mainMin = eachTime;
         Flash();
     }
-
-    
 }
