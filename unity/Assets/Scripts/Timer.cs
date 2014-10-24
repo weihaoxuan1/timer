@@ -4,6 +4,7 @@ using System.Collections;
 public class Timer : MonoBehaviour {
 
     public int eachTime;
+    public int eachTimeSec;
     int mainMin = 10;
     int mainSec = 0;
     float mSec = 0;
@@ -12,12 +13,14 @@ public class Timer : MonoBehaviour {
     bool ifStart = false;
     bool ifHide = false;
     bool ifTimeout = false;
+    bool ifSetting = false;
     UILabel mainTime;
     UILabel deltaTime;
     UILabel group;
 
     GameObject zoomIn;
     GameObject zoomOut;
+    GameObject settingUI;
 	// Use this for initialization
 	void Start () {
         mainTime = transform.Find("MainTime").GetComponent<UILabel>();
@@ -25,6 +28,7 @@ public class Timer : MonoBehaviour {
         group = transform.Find("Group").GetComponent<UILabel>();
         zoomIn = transform.Find("Zoomin").gameObject;
         zoomOut = transform.Find("Zoomout").gameObject;
+        settingUI = transform.Find("SettingUI").gameObject;
         mainMin = eachTime;
 
         Flash();
@@ -103,6 +107,7 @@ public class Timer : MonoBehaviour {
 
     public void OnStartTimer()
     {
+        if (ifSetting) return;
         audio.Play();
         ifStart = !ifStart;
     }
@@ -135,6 +140,7 @@ public class Timer : MonoBehaviour {
 
     public void OnIncreaseTime()
     {
+        if (ifSetting) return;
         delta -= 300;
         mainMin += 5;
         ifTimeout = false;
@@ -144,9 +150,10 @@ public class Timer : MonoBehaviour {
 
     public void OnNextGroup()
     {
+        if (ifSetting) return;
         delta += mainMin * 60 + mainSec;
         mainMin = eachTime;
-        mainSec = 0;
+        mainSec = eachTimeSec;
         mSec = 0;
         ifStart = false;
         ifTimeout = false;
@@ -159,6 +166,7 @@ public class Timer : MonoBehaviour {
 
     public void OnChange_mSec()
     {
+        if (ifSetting) return;
         ifHide = !ifHide;
         if (ifHide)
         {
@@ -176,8 +184,9 @@ public class Timer : MonoBehaviour {
 
     public void OnReset()
     {
+        if (ifSetting) return;
         mainMin = eachTime;
-        mainSec = 0;
+        mainSec = eachTimeSec;
         mSec = 0;
         delta = 0;
         currGroup = 1;
@@ -190,11 +199,37 @@ public class Timer : MonoBehaviour {
 
     public void OnInputSubmit()
     {
+        //audio.Play();
         Debug.Log(eachTime);
-        eachTime = int.Parse(GameObject.Find("InputEachTime/Label").gameObject.GetComponent<UILabel>().text);
+        eachTime = int.Parse(GameObject.Find("InputEachTime_Min/Label").gameObject.GetComponent<UILabel>().text);
+        eachTimeSec = int.Parse(GameObject.Find("InputEachTime_Sec/Label").gameObject.GetComponent<UILabel>().text);
         Debug.Log(eachTime);
-        if(!ifStart && !ifTimeout && mSec == 0)
+        if (!ifStart && !ifTimeout && mSec == 0)
+        {
             mainMin = eachTime;
+            mainSec = eachTimeSec;
+        }
         Flash();
+    }
+
+    public void OnSetting()
+    {
+        audio.Play();
+        if (ifSetting)
+        {
+            ifSetting = false;
+            settingUI.SetActive(false);
+        }
+        else
+        {
+            ifSetting = true;
+            settingUI.SetActive(true);
+        }
+    }
+
+    public void OnSettingCancel()
+    {
+        audio.Play();
+        settingUI.SetActive(false);
     }
 }
