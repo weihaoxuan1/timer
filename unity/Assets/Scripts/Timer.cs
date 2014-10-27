@@ -3,6 +3,31 @@ using System.Collections;
 
 public class Timer : MonoBehaviour {
 
+    struct stat
+    {
+        public int et;
+        public int ets;
+        public int m;
+        public int s;
+        public float ms;
+        public float de;
+        public int cg;
+        public bool ifst;
+        public bool ifhi;
+        public bool ifti;
+        public bool ifse;
+        public string mt;
+        public string dt;
+        public string gr;
+        public void set(int zet, int zets, int zm, int zs, float zms, float zde, int zcg, bool zifst, bool zifhi, bool zifti, bool zifse, string zmt, string zdt, string zgr)
+        {
+            et = zet; ets = zets; m = zm; s = zs; ms = zms; de = zde; cg = zcg; ifst = zifst; ifhi = zifhi; ifti = zifst; ifse = zifse; mt = zmt; dt = zdt; gr = zgr;
+        }
+    };
+
+    stat[] done;
+    int pDone = 0;
+
     public int eachTime;
     public int eachTimeSec;
     int mainMin = 10;
@@ -18,6 +43,9 @@ public class Timer : MonoBehaviour {
     UILabel deltaTime;
     UILabel group;
 
+    public AudioClip buttSound;
+    public AudioClip ringSound;
+
     GameObject zoomIn;
     GameObject zoomOut;
     GameObject settingUI;
@@ -30,6 +58,7 @@ public class Timer : MonoBehaviour {
         zoomOut = transform.Find("Zoomout").gameObject;
         settingUI = transform.Find("SettingUI").gameObject;
         mainMin = eachTime;
+        done = new stat[10];
 
         Flash();
 	}
@@ -92,6 +121,7 @@ public class Timer : MonoBehaviour {
                     mainSec = 0;
                     ifStart = false;
                     ifTimeout = true;
+                    audio.PlayOneShot(ringSound);
                     return;
                 }
                 mainMin--;
@@ -108,7 +138,7 @@ public class Timer : MonoBehaviour {
     public void OnStartTimer()
     {
         if (ifSetting) return;
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         ifStart = !ifStart;
     }
 
@@ -141,16 +171,18 @@ public class Timer : MonoBehaviour {
     public void OnIncreaseTime()
     {
         if (ifSetting) return;
+        Remember();
         delta -= 300;
         mainMin += 5;
         ifTimeout = false;
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         Flash();
     }
 
     public void OnNextGroup()
     {
         if (ifSetting) return;
+        Remember();
         delta += mainMin * 60 + mainSec;
         mainMin = eachTime;
         mainSec = eachTimeSec;
@@ -160,7 +192,7 @@ public class Timer : MonoBehaviour {
         
         currGroup++;
         group.text = "第" + currGroup.ToString() + "组";
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         Flash();
     }
 
@@ -178,13 +210,14 @@ public class Timer : MonoBehaviour {
             zoomIn.SetActive(false);
             zoomOut.SetActive(true);
         }
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         Flash();
     }
 
     public void OnReset()
     {
         if (ifSetting) return;
+        Remember();
         mainMin = eachTime;
         mainSec = eachTimeSec;
         mSec = 0;
@@ -192,18 +225,25 @@ public class Timer : MonoBehaviour {
         currGroup = 1;
         ifStart = false;
         ifTimeout = false;
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         group.text = "第" + currGroup.ToString() + "组";
         Flash();
     }
 
     public void OnInputSubmit()
     {
-        //audio.Play();
-        Debug.Log(eachTime);
-        eachTime = int.Parse(GameObject.Find("InputEachTime_Min/Label").gameObject.GetComponent<UILabel>().text);
-        eachTimeSec = int.Parse(GameObject.Find("InputEachTime_Sec/Label").gameObject.GetComponent<UILabel>().text);
-        Debug.Log(eachTime);
+        //audio.PlayOneShot(buttSound);
+        //Debug.Log(eachTime);
+        Remember();
+        int s = int.Parse(GameObject.Find("InputEachTime_Sec/Label").gameObject.GetComponent<UILabel>().text);
+        int m = int.Parse(GameObject.Find("InputEachTime_Min/Label").gameObject.GetComponent<UILabel>().text);
+        if (m > 59) m = 59;
+        GameObject.Find("InputEachTime_Min/Label").gameObject.GetComponent<UILabel>().text = m.ToString();
+        if (s > 59) s = 59;
+        GameObject.Find("InputEachTime_Sec/Label").gameObject.GetComponent<UILabel>().text = s<10?"0" + s.ToString():s.ToString();
+        eachTime = m;
+        eachTimeSec = s;
+        //Debug.Log(eachTime);
         if (!ifStart && !ifTimeout && mSec == 0)
         {
             mainMin = eachTime;
@@ -214,7 +254,7 @@ public class Timer : MonoBehaviour {
 
     public void OnSetting()
     {
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         if (ifSetting)
         {
             ifSetting = false;
@@ -229,7 +269,54 @@ public class Timer : MonoBehaviour {
 
     public void OnSettingCancel()
     {
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         settingUI.SetActive(false);
+    }
+
+    void Remember()
+    {
+        Debug.Log("before remember , pDone = " + pDone%10);
+        //Debug.Log(done[0].gr);
+        done[pDone % 10].set(
+            eachTime,
+            eachTimeSec,
+            mainMin,
+            mainSec,
+            mSec,
+            delta,
+            currGroup,
+            ifStart, 
+            ifHide, 
+            ifTimeout, 
+            ifSetting,
+            mainTime.text,
+            deltaTime.text, 
+            group.text);
+        pDone++;
+        Debug.Log("remembered , pDone = " + pDone);
+        
+    }
+
+    public void OnUndo()
+    {
+        if (pDone <= 0) return;
+        pDone--;
+        Debug.Log("after undo , pDone = " + pDone % 10);
+        audio.PlayOneShot(buttSound);
+        eachTime = done[pDone % 10].et;
+        eachTimeSec = done[pDone % 10].ets;
+        mainMin = done[pDone % 10].m;
+        mainSec = done[pDone % 10].s;
+        mSec = done[pDone % 10].ms;
+        delta = done[pDone % 10].de;
+        currGroup = done[pDone % 10].cg;
+        ifStart = done[pDone % 10].ifst;
+        ifHide = done[pDone % 10].ifhi;
+        ifTimeout = done[pDone % 10].ifti;
+        ifSetting = done[pDone % 10].ifse;
+        mainTime.text = done[pDone % 10].mt;
+        deltaTime.text = done[pDone % 10].dt;
+        group.text = done[pDone % 10].gr;
+        Flash();
     }
 }

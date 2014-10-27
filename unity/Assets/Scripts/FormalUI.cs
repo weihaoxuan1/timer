@@ -3,8 +3,8 @@ using System.Collections;
 
 public class FormalUI : MonoBehaviour {
 
-    int mainMin = 10;
-    int mainSec = 0;
+    public int mainMin = 0;
+    public int mainSec = 5;
     bool ifNext = false;
     float mSec = 0;
     bool ifStart = false;
@@ -14,6 +14,9 @@ public class FormalUI : MonoBehaviour {
     UILabel mainTime;
     UILabel stage;
     GameObject next;
+
+    public AudioClip buttSound;
+    public AudioClip ringSound;
 
 	// Use this for initialization
 	void Start () {
@@ -25,6 +28,9 @@ public class FormalUI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if(mainMin == 2 && mainSec == 0 && mSec <= 2 && stage.text.Equals("说明阶段"))
+            audio.PlayOneShot(ringSound);
+
         if (ifStart)
         {
             //Debug.Log(Time.deltaTime);
@@ -41,7 +47,9 @@ public class FormalUI : MonoBehaviour {
                 {
                     mSec = 0;
                     mainSec = 0;
+                    mSec = 0;
                     ifStart = false;
+                    audio.PlayOneShot(ringSound);
                     return;
                 }
                 mainMin--;
@@ -70,14 +78,14 @@ public class FormalUI : MonoBehaviour {
         mainMin = 10;
         mainSec = 0;
         mSec = 0;
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         stage.text = "说明阶段";
         Flash();
     }
 
     public void OnStart()
     {
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         ifStart = !ifStart;
     }
 
@@ -90,7 +98,7 @@ public class FormalUI : MonoBehaviour {
         mainMin = 10;
         mainSec = 0;
         mSec = 0;
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         Flash();
     }
 
@@ -101,7 +109,7 @@ public class FormalUI : MonoBehaviour {
             hide.text = "显示毫秒";
         else
             hide.text = "隐藏毫秒";
-        audio.Play();
+        audio.PlayOneShot(buttSound);
         Flash();
     }
 }

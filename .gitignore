@@ -1,43 +1,101 @@
-# Windows image file caches
+# Ignore thumbnails created by windows
 Thumbs.db
-ehthumbs.db
 
-# Folder config file
-Desktop.ini
+# Ignore files build by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.aps
+*.vcproj.*.user
+*.vcxproj.user
+*.vspscc
+*_i.c
+*.i
+*.icf
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Dd]ebug*/
+*.sbr
+*.sdf
+obj/
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+ipch/
+*.opensdf
+Generated Files
+AppPackages
+SubmissionInfo
+*.hps
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
+# Ignore files build by ndk and eclipse
+obj/
+gen/
+local.properties
+.classpath
 
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
+# Ignore python compiled files
+*.pyc
 
-# =========================
-# Operating System Files
-# =========================
+# Ignore files build by airplay and marmalade
+build_*_xcode/
+build_*_vc10/
 
-# OSX
-# =========================
-
+# Ignore files build by xcode
+*.mode*v*
+*.pbxuser
+*.xcbkptlist
+*.xcscheme
+*.xcworkspacedata
+*.xcuserstate
+xcschememanagement.plist
+build/
 .DS_Store
-.AppleDouble
-.LSOverride
+._.*
+xcuserdata/
+DerivedData/
+*.xccheckout
 
-# Icon must end with two \r
-Icon
+# Ignore files built by bada
+.Simulator-Debug/
+.Target-Debug/
+.Target-Release/
 
-# Thumbnails
-._*
+# Ignore files built by blackberry
+Simulator/
+Device-Debug/
+Device-Release/
 
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
+# Ignore vim swaps
+*.swp
 
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
+# CTags
+tags
+
+#unity
+Temp/
+*.unityproj
+*.csproj
+*.pidb
+*.sln
+*.userprefs
+ScriptAssemblies/
+*.unityproj
+Library/
+factory/proj.android/FutureHero/bin/
+factory/proj.android/FutureHero/assets/
+*.apk
+proj.android/key
+
+#mergetool
+*.bak
+*.bak.meta
+*.orig
+*.orig.meta
