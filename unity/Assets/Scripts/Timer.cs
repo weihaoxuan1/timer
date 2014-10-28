@@ -21,7 +21,7 @@ public class Timer : MonoBehaviour {
         public string gr;
         public void set(int zet, int zets, int zm, int zs, float zms, float zde, int zcg, bool zifst, bool zifhi, bool zifti, bool zifse, string zmt, string zdt, string zgr)
         {
-            et = zet; ets = zets; m = zm; s = zs; ms = zms; de = zde; cg = zcg; ifst = zifst; ifhi = zifhi; ifti = zifst; ifse = zifse; mt = zmt; dt = zdt; gr = zgr;
+            et = zet; ets = zets; m = zm; s = zs; ms = zms; de = zde; cg = zcg; ifst = zifst; ifhi = zifhi; ifti = zifti; ifse = zifse; mt = zmt; dt = zdt; gr = zgr;
         }
     };
 
@@ -193,6 +193,20 @@ public class Timer : MonoBehaviour {
         currGroup++;
         group.text = "第" + currGroup.ToString() + "组";
         audio.PlayOneShot(buttSound);
+        /*Debug.Log("eachTimer =" + eachTime +
+            "\n eachTimeSec =" + eachTimeSec +
+            "\n mainMin =" + mainMin +
+            "\n mainSec =" + mainSec +
+            "\n mSec =" + mSec +
+            "\n delta =" + delta +
+            "\n currGroup =" + currGroup +
+            "\n ifStart =" + ifStart +
+            "\n ifHide =" + ifHide +
+            "\n ifTimeout =" + ifTimeout +
+            "\n ifSetting =" + ifSetting +
+            "\n mainTime =" + mainTime.text +
+            "\n deltaTime =" + deltaTime.text +
+            "\n group =" + group.text);*/
         Flash();
     }
 
@@ -275,7 +289,7 @@ public class Timer : MonoBehaviour {
 
     void Remember()
     {
-        Debug.Log("before remember , pDone = " + pDone%10);
+        /*Debug.Log("before remember , pDone = " + pDone%10);*/
         //Debug.Log(done[0].gr);
         done[pDone % 10].set(
             eachTime,
@@ -293,8 +307,21 @@ public class Timer : MonoBehaviour {
             deltaTime.text, 
             group.text);
         pDone++;
-        Debug.Log("remembered , pDone = " + pDone);
-        
+        /*Debug.Log("remembered , pDone = " + pDone);
+        Debug.Log("eachTimer =" + eachTime +
+            "\n eachTimeSec =" + eachTimeSec +
+            "\n mainMin =" + mainMin +
+            "\n mainSec =" + mainSec +
+            "\n mSec =" + mSec +
+            "\n delta =" + delta +
+            "\n currGroup =" + currGroup +
+            "\n ifStart =" + ifStart +
+            "\n ifHide =" + ifHide +
+            "\n ifTimeout =" + ifTimeout +
+            "\n ifSetting =" + ifSetting +
+            "\n mainTime =" + mainTime.text +
+            "\n deltaTime =" + deltaTime.text +
+            "\n group =" + group.text);*/
     }
 
     public void OnUndo()
@@ -317,6 +344,20 @@ public class Timer : MonoBehaviour {
         mainTime.text = done[pDone % 10].mt;
         deltaTime.text = done[pDone % 10].dt;
         group.text = done[pDone % 10].gr;
+        /*Debug.Log("eachTimer =" + eachTime +
+            "\n eachTimeSec =" + eachTimeSec +
+            "\n mainMin =" + mainMin +
+            "\n mainSec =" + mainSec +
+            "\n mSec =" + mSec +
+            "\n delta =" + delta +
+            "\n currGroup =" + currGroup +
+            "\n ifStart =" + ifStart +
+            "\n ifHide =" + ifHide +
+            "\n ifTimeout =" + ifTimeout +
+            "\n ifSetting =" + ifSetting +
+            "\n mainTime =" + mainTime.text +
+            "\n deltaTime =" + deltaTime.text +
+            "\n group =" + group.text);*/
         Flash();
     }
 }
