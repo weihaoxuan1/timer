@@ -21,7 +21,7 @@ public class Timer : MonoBehaviour {
         public string gr;
         public void set(int zet, int zets, int zm, int zs, float zms, float zde, int zcg, bool zifst, bool zifhi, bool zifti, bool zifse, string zmt, string zdt, string zgr)
         {
-            et = zet; ets = zets; m = zm; s = zs; ms = zms; de = zde; cg = zcg; ifst = zifst; ifhi = zifhi; ifti = zifst; ifse = zifse; mt = zmt; dt = zdt; gr = zgr;
+            et = zet; ets = zets; m = zm; s = zs; ms = zms; de = zde; cg = zcg; ifst = zifst; ifhi = zifhi; ifti = zifti; ifse = zifse; mt = zmt; dt = zdt; gr = zgr;
         }
     };
 
